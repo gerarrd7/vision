@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Résumé du Projet E-Commerce — Pour Cassa</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+        }
+
+        /* Particules d'arrière-plan */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 215, 0, 0.4);
+            border-radius: 50%;
+            animation: float-particle linear infinite;
+        }
+
+        @keyframes float-particle {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Hint message */
+        .hint-message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,165,0,0.15));
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            backdrop-filter: blur(10px);
+            color: #ffd700;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 500;
+            z-index: 1000;
+            animation: pulse-hint 2s ease-in-out infinite;
+            text-align: center;
+            max-width: 90%;
+            box-shadow: 0 4px 30px rgba(255, 215, 0, 0.1);
+        }
+
+        @keyframes pulse-hint {
+            0%, 100% { transform: translateX(-50%) scale(1); box-shadow: 0 4px 30px rgba(255, 215, 0, 0.1); }
+            50% { transform: translateX(-50%) scale(1.03); box-shadow: 0 4px 40px rgba(255, 215, 0, 0.25); }
+        }
+
+        .hint-message.hidden {
+            display: none;
+        }
+
+        /* Bouton Play TTS */
+        .btn-play {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            z-index: 1001;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 6px 25px rgba(231, 76, 60, 0.4);
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            animation: glow-play 2s ease-in-out infinite;
+        }
+
+        @keyframes glow-play {
+            0%, 100% { box-shadow: 0 6px 25px rgba(231, 76, 60, 0.4); }
+            50% { box-shadow: 0 6px 35px rgba(231, 76, 60, 0.7); }
+        }
+
+        .btn-play:hover {
+            transform: scale(1.06);
+            box-shadow: 0 8px 35px rgba(231, 76, 60, 0.6);
+        }
+
+        .btn-play .play-icon {
+            font-size: 1.2rem;
+        }
+
+        .btn-play.speaking {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            animation: glow-speaking 1.5s ease-in-out infinite;
+        }
+
+        @keyframes glow-speaking {
+            0%, 100% { box-shadow: 0 6px 25px rgba(46, 204, 113, 0.4); }
+            50% { box-shadow: 0 6px 35px rgba(46, 204, 113, 0.7); }
+        }
+
+        /* Surlignage bleu de lecture */
+        .reading-highlight {
+            background: linear-gradient(120deg, rgba(52, 152, 219, 0.15) 0%, rgba(41, 128, 185, 0.12) 100%) !important;
+            border-left: 4px solid #3498db !important;
+            padding-left: 12px !important;
+            border-radius: 6px;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .reading-highlight::after {
+            content: '\25B6';
+            position: absolute;
+            left: -18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #3498db;
+            font-size: 0.7rem;
+            animation: pulse-arrow 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse-arrow {
+            0%, 100% { opacity: 0.5; transform: translateY(-50%) translateX(0); }
+            50% { opacity: 1; transform: translateY(-50%) translateX(3px); }
+        }
+
+        /* Enveloppe container */
+        .envelope-container {
+            position: relative;
+            z-index: 10;
+            cursor: pointer;
+            animation: fall-down 2.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            transform: translateY(-120vh);
+        }
+
+        @keyframes fall-down {
+            0% { transform: translateY(-120vh) rotate(-15deg) scale(0.5); }
+            60% { transform: translateY(10px) rotate(3deg) scale(1.05); }
+            75% { transform: translateY(-8px) rotate(-1deg) scale(0.98); }
+            90% { transform: translateY(3px) rotate(0.5deg) scale(1.01); }
+            100% { transform: translateY(0) rotate(0deg) scale(1); }
+        }
+
+        /* L'enveloppe */
+        .envelope {
+            width: 320px;
+            height: 220px;
+            position: relative;
+            perspective: 800px;
+            transition: transform 0.3s ease;
+        }
+
+        .envelope:hover {
+            transform: scale(1.04);
+        }
+
+        .envelope-body {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #f5e6c8, #e8d5a8);
+            border-radius: 8px;
+            position: relative;
+            box-shadow: 
+                0 15px 40px rgba(0,0,0,0.3),
+                inset 0 0 30px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .envelope-body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 10px,
+                    rgba(139,69,19,0.03) 10px,
+                    rgba(139,69,19,0.03) 20px
+                );
+        }
+
+        /* Rabat de l'enveloppe */
+        .envelope-flap {
+            width: 0;
+            height: 0;
+            border-left: 160px solid transparent;
+            border-right: 160px solid transparent;
+            border-top: 120px solid #d4c098;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 5;
+            transform-origin: top center;
+            transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+        }
+
+        .envelope-flap::after {
+            content: '';
+            position: absolute;
+            top: -120px;
+            left: -160px;
+            width: 320px;
+            height: 120px;
+            background: linear-gradient(180deg, #c9b58a 0%, #d4c098 100%);
+            clip-path: polygon(50% 100%, 0 0, 100% 0);
+        }
+
+        .envelope.opened .envelope-flap {
+            transform: rotateX(180deg);
+        }
+
+        /* Tampon / cachet */
+        .stamp {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 50px;
+            border: 3px solid #c0392b;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(-5deg);
+            z-index: 3;
+        }
+
+        .stamp-inner {
+            font-size: 0.6rem;
+            color: #c0392b;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.1;
+            text-transform: uppercase;
+        }
+
+        /* Sceau de cire */
+        .wax-seal {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle at 35% 35%, #e74c3c, #c0392b, #8b0000);
+            border-radius: 50%;
+            z-index: 6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                0 3px 10px rgba(0,0,0,0.3),
+                inset 0 -2px 5px rgba(0,0,0,0.2),
+                inset 0 2px 5px rgba(255,255,255,0.1);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .wax-seal::after {
+            content: '\2709';
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .envelope.opened .wax-seal {
+            opacity: 0;
+            transform: translateX(-50%) scale(0);
+        }
+
+        /* Texte sur l'enveloppe */
+        .envelope-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 3;
+            color: #5d4e37;
+        }
+
+        .envelope-text .to {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .envelope-text .from {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            font-style: italic;
+        }
+
+        /* Lignes décoratives */
+        .envelope-lines {
+            position: absolute;
+            bottom: 25px;
+            left: 20px;
+            z-index: 3;
+        }
+
+        .envelope-lines span {
+            display: block;
+            height: 2px;
+            background: rgba(93, 78, 55, 0.15);
+            margin-bottom: 6px;
+            border-radius: 1px;
+        }
+
+        .envelope-lines span:nth-child(1) { width: 120px; }
+        .envelope-lines span:nth-child(2) { width: 100px; }
+        .envelope-lines span:nth-child(3) { width: 80px; }
+
+        /* La lettre */
+        .letter-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            animation: fade-in 0.5s ease;
+            padding: 20px;
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .letter {
+            width: 100%;
+            max-width: 850px;
+            max-height: 85vh;
+            background: linear-gradient(180deg, #fffef9, #faf6eb, #f5f0e0);
+            border-radius: 12px;
+            padding: 45px 40px 40px;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 
+                0 25px 80px rgba(0,0,0,0.4),
+                inset 0 0 60px rgba(139, 119, 42, 0.04);
+            animation: letter-slide-up 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            transform: translateY(60px) scale(0.9);
+            opacity: 0;
+            border: 1px solid rgba(200, 180, 130, 0.4);
+        }
+
+        /* Lignes de papier */
+        .letter::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                transparent,
+                transparent 31px,
+                rgba(100, 149, 237, 0.07) 31px,
+                rgba(100, 149, 237, 0.07) 32px
+            );
+            pointer-events: none;
+            border-radius: 12px;
+        }
+
+        /* Marge rouge */
+        .letter::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 45px;
+            width: 2px;
+            height: 100%;
+            background: rgba(220, 50, 50, 0.1);
+            pointer-events: none;
+        }
+
+        @keyframes letter-slide-up {
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        .letter::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .letter::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.03);
+            border-radius: 4px;
+        }
+
+        .letter::-webkit-scrollbar-thumb {
+            background: rgba(139, 119, 42, 0.2);
+            border-radius: 4px;
+        }
+
+        .letter::-webkit-scrollbar-thumb:hover {
+            background: rgba(139, 119, 42, 0.35);
+        }
+
+        .letter-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(200, 180, 130, 0.3);
+        }
+
+        .letter-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .letter-header .subtitle {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .letter-header .date {
+            font-size: 0.8rem;
+            color: #95a5a6;
+            margin-top: 8px;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid;
+            border-image: linear-gradient(90deg, #e74c3c, #f39c12, transparent) 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title .icon {
+            font-size: 1.3rem;
+        }
+
+        .letter p, .letter li {
+            color: #34495e;
+            font-size: 0.92rem;
+            line-height: 1.75;
+        }
+
+        .letter ol {
+            padding-left: 20px;
+        }
+
+        .letter ol > li {
+            margin-bottom: 14px;
+            padding-left: 5px;
+        }
+
+        .letter ol > li::marker {
+            color: #e74c3c;
+            font-weight: 700;
+        }
+
+        .letter ul {
+            list-style: none;
+            padding-left: 10px;
+            margin-top: 6px;
+        }
+
+        .letter ul li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 5px;
+            font-size: 0.88rem;
+        }
+
+        .letter ul li::before {
+            content: '\2192';
+            position: absolute;
+            left: 0;
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        strong {
+            color: #c0392b;
+            font-weight: 600;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, rgba(255,215,0,0.15) 0%, rgba(255,165,0,0.15) 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .budget-box {
+            background: linear-gradient(135deg, rgba(231,76,60,0.06), rgba(243,156,18,0.06));
+            border: 1px solid rgba(231,76,60,0.15);
+            border-radius: 10px;
+            padding: 20px 25px;
+            margin: 15px 0;
+        }
+
+        .budget-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed rgba(0,0,0,0.08);
+        }
+
+        .budget-item:last-child {
+            border-bottom: none;
+            padding-top: 12px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: #c0392b;
+        }
+
+        .budget-item .label {
+            color: #34495e;
+        }
+
+        .budget-item .amount {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .progress-bar-visual {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.03);
+            border-radius: 30px;
+            padding: 12px 20px;
+            margin: 12px 0;
+            position: relative;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+            z-index: 2;
+        }
+
+        .progress-dot {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .progress-step:nth-child(1) .progress-dot { background: #e74c3c; }
+        .progress-step:nth-child(2) .progress-dot { background: #f39c12; }
+        .progress-step:nth-child(3) .progress-dot { background: #3498db; }
+        .progress-step:nth-child(4) .progress-dot { background: #27ae60; }
+
+        .progress-label {
+            font-size: 0.65rem;
+            color: #7f8c8d;
+            text-align: center;
+            max-width: 80px;
+        }
+
+        .closing {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid rgba(200, 180, 130, 0.3);
+        }
+
+        .closing p {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            color: #2c3e50;
+            font-style: italic;
+        }
+
+        .closing .signature {
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: #7f8c8d;
+        }
+
+        /* Bouton fermer */
+        .btn-close-envelope {
+            display: block;
+            margin: 25px auto 0;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: #ffd700;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            padding: 14px 35px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-close-envelope:hover {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            border-color: rgba(255, 215, 0, 0.6);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .envelope {
+                width: 260px;
+                height: 180px;
+            }
+
+            .envelope-flap {
+                border-left: 130px solid transparent;
+                border-right: 130px solid transparent;
+                border-top: 100px solid #d4c098;
+            }
+
+            .envelope-flap::after {
+                top: -100px;
+                left: -130px;
+                width: 260px;
+                height: 100px;
+            }
+
+            .letter {
+                padding: 30px 22px 25px;
+            }
+
+            .letter-header h1 {
+                font-size: 1.4rem;
+            }
+
+            .hint-message {
+                font-size: 0.85rem;
+                padding: 10px 20px;
+            }
+
+            .btn-play {
+                bottom: 15px;
+                right: 15px;
+                font-size: 0.82rem;
+                padding: 10px 18px;
+            }
+
+            .progress-bar-visual {
+                flex-wrap: wrap;
+                gap: 10px;
+                justify-content: center;
+            }
+        }
+
+        /* Animation scintillement étoiles */
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        .star {
+            position: fixed;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle linear infinite;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Étoiles d'arrière-plan -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Message d'indication -->
+    <div class="hint-message" id="hintMessage">
+        &#9993; Dans 5 secondes, touchez l'enveloppe pour que <strong>Ricardo Lector</strong> vous lise le contenu !
+    </div>
+
+    <!-- Bouton Play TTS -->
+    <button class="btn-play" id="btnPlay" onclick="toggleSpeech()">
+        <span class="play-icon">&#128264;</span> Faut me lire !
+    </button>
+
+    <!-- Enveloppe animée -->
+    <div class="envelope-container" id="envelopeContainer" onclick="openEnvelope()">
+        <div class="envelope" id="envelope">
+            <div class="envelope-flap"></div>
+            <div class="envelope-body">
+                <div class="envelope-text">
+                    <div class="to">Pour Cassa</div>
+                    <div class="from">— Projet E-Commerce —</div>
+                </div>
+                <div class="envelope-lines">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <div class="stamp">
+                    <div class="stamp-inner">C&Ocirc;TE<br>D'IVOIRE</div>
+                </div>
+                <div class="wax-seal"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Container de la lettre -->
+    <div class="letter-container" id="letterContainer">
+        <div class="letter" id="letterContent">
+            <div class="letter-header">
+                <h1>&#128203; R&eacute;sum&eacute; du Projet E-Commerce</h1>
+                <div class="subtitle">Proposition d&eacute;taill&eacute;e envoy&eacute;e &agrave; Cassa</div>
+                <div class="date">Abidjan, le 17 f&eacute;vrier 2026</div>
+            </div>
+
+            <!-- SECTION 1: LE SITE -->
+            <div class="section">
+                <div class="section-title">
+                    <span class="icon">&#127760;</span> Le Site — C&ocirc;t&eacute; Utilisateur
+                </div>
+                <ol>
+                    <li>
+                        <strong>Navigation et consultation des articles :</strong> Les visiteurs pourront acc&eacute;der au site, consulter les articles disponibles sur la page, les choisir et proc&eacute;der au paiement.
+                    </li>
+                    <li>
+                        <strong>Cr&eacute;ation de compte :</strong> Lorsqu'un utilisateur souhaite payer ou s&eacute;lectionner des articles, le site lui demandera de cr&eacute;er un compte. Lors de la cr&eacute;ation, il pourra entrer un <span class="highlight">code de parrainage</span> ou un <span class="highlight">lien de parrainage</span> s'il en poss&egrave;de un. Sinon, il passe cette &eacute;tape.
+                        <ul>
+                            <li>La personne qui parraine recevra <strong>10 %</strong> sur le prix de vente de l'article choisi par le filleul.</li>
+                            <li>Retrait minimum : <strong>8 000 FCFA</strong>. Si la personne commence, le retrait minimum est de <strong>24 000 FCFA</strong>.</li>
+                            <li>Ce montant est retirable et peut &eacute;galement &ecirc;tre utilis&eacute; pour payer des articles.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Notification de parrainage :</strong> Apr&egrave;s la cr&eacute;ation du compte, le parrain recevra une notification indiquant qu'il a parrain&eacute; un nouvel utilisateur. Il pourra aussi voir si celui-ci a effectu&eacute; un abonnement.
+                    </li>
+                    <li>
+                        <strong>S&eacute;lection des articles :</strong> Apr&egrave;s la cr&eacute;ation ou la connexion au compte, l'utilisateur pourra choisir les articles qu'il souhaite et proc&eacute;der au paiement.
+                        <ul>
+                            <li>Les articles seront class&eacute;s par <strong>cat&eacute;gorie</strong>.</li>
+                            <li>Leur <strong>statut de disponibilit&eacute;</strong> sera affich&eacute;.</li>
+                            <li>La <strong>disponibilit&eacute; par r&eacute;gion ou ville</strong> en C&ocirc;te d'Ivoire (ou partout) sera pr&eacute;cis&eacute;e.</li>
+                            <li>Le <strong>nombre d'articles restants</strong> pour chaque produit sera visible si possible.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Panier d'achat :</strong> L'utilisateur fait son choix et ajoute au panier en se basant sur :
+                        <ul>
+                            <li>Le <strong>nombre d'articles</strong> souhait&eacute;.</li>
+                            <li>La <strong>bo&icirc;te compl&egrave;te</strong> si elle existe.</li>
+                            <li>Le <strong>prix affich&eacute;</strong> lors de la s&eacute;lection. Le total du panier s'affiche en bas, avec les r&eacute;ductions appliqu&eacute;es automatiquement si applicable.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Lieu de livraison :</strong> Apr&egrave;s les choix, l'utilisateur passe &agrave; l'&eacute;tape du lieu de livraison. Il pourra laisser une <span class="highlight">adresse GPS</span>, le nom de la ville, et si possible, les informations de son compte (ville, etc.) seront utilis&eacute;es automatiquement.
+                    </li>
+                    <li>
+                        <strong>Paiement et suivi de commande :</strong>
+                        <ul>
+                            <li>Une fois le paiement effectu&eacute;, le statut de livraison sera <strong>&laquo; En attente &raquo;</strong>.</li>
+                            <li>L'utilisateur re&ccedil;oit un <strong>e-mail de confirmation</strong> d&eacute;taillant ses choix et le paiement.</li>
+                            <li>L'administrateur re&ccedil;oit le m&ecirc;me e-mail avec davantage de d&eacute;tails.</li>
+                            <li>Sous <strong>24 heures maximum</strong>, l'utilisateur sera contact&eacute; par WhatsApp, appel ou e-mail pour recevoir la date de livraison.</li>
+                        </ul>
+
+                        <!-- Barre de progression visuelle -->
+                        <div class="progress-bar-visual">
+                            <div class="progress-step">
+                                <div class="progress-dot">25%</div>
+                                <div class="progress-label">Commande pass&eacute;e</div>
+                            </div>
+                            <div class="progress-step">
+                                <div class="progress-dot">50%</div>
+                                <div class="progress-label">Paiement re&ccedil;u</div>
+                            </div>
+                            <div class="progress-step">
+                                <div class="progress-dot">75%</div>
+                                <div class="progress-label">Date de livraison</div>
+                            </div>
+                            <div class="progress-step">
+                                <div class="progress-dot">100%</div>
+                                <div class="progress-label">Livraison &#9989;</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <strong>Avis client :</strong> Apr&egrave;s r&eacute;ception de la livraison, l'utilisateur pourra laisser un commentaire sur le site pour confirmer la r&eacute;ception, ce qui renforcera la confiance des autres clients.
+                    </li>
+                    <li>
+                        <strong>Gestion du stock :</strong> Lorsqu'un paiement est effectu&eacute;, le nombre d'articles disponibles diminue automatiquement.
+                    </li>
+                    <li>
+                        <strong>Tableau de bord :</strong> Des statistiques et tableaux de bord seront disponibles pour les parrains.
+                    </li>
+                    <li>
+                        <strong>Paiement s&eacute;curis&eacute; :</strong> Tous les paiements d'articles se feront via <strong>Money Fusion</strong>. Les frais de transaction sont &agrave; la charge du client et seront comptabilis&eacute;s automatiquement.
+                    </li>
+                </ol>
+            </div>
+
+            <!-- SECTION 2: ADMIN -->
+            <div class="section">
+                <div class="section-title">
+                    <span class="icon">&#128295;</span> C&ocirc;t&eacute; Administrateur
+                </div>
+                <ol>
+                    <li><strong>Tableau de bord des statistiques :</strong> Suivi d&eacute;taill&eacute; des vues par article, par r&eacute;gion, ville ou pays en C&ocirc;te d'Ivoire.</li>
+                    <li><strong>Gestion des utilisateurs :</strong> V&eacute;rification et informations sur les clients, parrains, collaborateurs, etc.</li>
+                    <li><strong>Annulation et remboursement :</strong> L'administrateur peut annuler un produit achet&eacute; et rembourser le client si n&eacute;cessaire.</li>
+                    <li><strong>Blocage de compte :</strong> Possibilit&eacute; de bloquer un compte en cas de tentative d'arnaque ou de violation des r&egrave;gles.</li>
+                    <li><strong>Int&eacute;gration Facebook Ads :</strong> V&eacute;rification du visionnage et des paiements li&eacute;s &agrave; Facebook Ads.</li>
+                    <li><strong>Suivi des commandes :</strong> Vue d'ensemble sur les clients ayant fait une demande d'article (pay&eacute; ou non pay&eacute;).</li>
+                    <li><strong>Support client :</strong> Pour toute aide, les clients contactent l'administrateur par <strong>WhatsApp</strong> ou <strong>e-mail</strong>.</li>
+                </ol>
+            </div>
+
+            <!-- SECTION 3: BUDGET -->
+            <div class="section">
+                <div class="section-title">
+                    <span class="icon">&#128176;</span> Budget et D&eacute;lais
+                </div>
+                <p><strong>Dur&eacute;e estim&eacute;e :</strong> Minimum <span class="highlight">1 semaine</span>, maximum <span class="highlight">2 mois</span>.</p>
+                <p style="margin-top: 8px;">Si le projet d&eacute;passe la limite de 2 mois, des frais de <strong>10 % &agrave; 50 %</strong> du prix du projet seront accord&eacute;s au client en compensation.</p>
+
+                <div class="budget-box">
+                    <div class="budget-item">
+                        <span class="label">&#127760; Nom de domaine (.com) + h&eacute;bergement/serveur (par an)</span>
+                        <span class="amount">100 000 FCFA</span>
+                    </div>
+                    <div class="budget-item">
+                        <span class="label">&#128187; D&eacute;veloppement du site, serveur, correction, int&eacute;gration<br><small style="color:#95a5a6;">(Possibilit&eacute; de payer par tranche)</small></span>
+                        <span class="amount">300 000 FCFA</span>
+                    </div>
+                    <div class="budget-item">
+                        <span class="label">&#128202; Total &agrave; pr&eacute;parer</span>
+                        <span class="amount">400 000 FCFA</span>
+                    </div>
+                </div>
+
+                <p style="margin-top: 10px;">&#128204; Les historiques et captures de paiement seront envoy&eacute;s au client une fois le paiement effectu&eacute;.</p>
+                <p>&#128204; Si les frais d'h&eacute;bergement sont r&eacute;duits via carte, la dur&eacute;e pourra s'&eacute;tendre &agrave; 2 ans.</p>
+            </div>
+
+            <!-- CLOSING -->
+            <div class="closing">
+                <p>&#10024; &Agrave; vous la parole maintenant, cher client. Merci ! &#10024;</p>
+                <div class="signature">— L'&eacute;quipe de d&eacute;veloppement —</div>
+            </div>
+
+            <!-- Bouton fermer l'enveloppe -->
+            <button class="btn-close-envelope" onclick="closeEnvelope()">
+                &#9993; Refermer l'enveloppe
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // === PARTICULES / ÉTOILES ===
+        function createParticles() {
+            var container = document.getElementById('particles');
+            for (var i = 0; i < 50; i++) {
+                var star = document.createElement('div');
+                star.className = 'star';
+                var size = Math.random() * 3 + 1;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                star.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(star);
+            }
+
+            for (var j = 0; j < 15; j++) {
+                var particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 8 + 6) + 's';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        // === ENVELOPPE ===
+        var isOpen = false;
+        var speechSynth = window.speechSynthesis;
+        var currentUtterance = null;
+        var isSpeaking = false;
+
+        function openEnvelope() {
+            if (isOpen) return;
+            isOpen = true;
+
+            var envelope = document.getElementById('envelope');
+            envelope.classList.add('opened');
+
+            // Cacher le hint
+            document.getElementById('hintMessage').classList.add('hidden');
+
+            // Après animation du rabat, montrer la lettre
+            setTimeout(function() {
+                document.getElementById('letterContainer').style.display = 'flex';
+                document.getElementById('btnPlay').style.display = 'flex';
+            }, 800);
+        }
+
+        function closeEnvelope() {
+            // Arrêter la parole
+            if (isSpeaking) {
+                speechSynth.cancel();
+                isSpeaking = false;
+                clearAllHighlights();
+                updatePlayButton();
+            }
+
+            // Fermer la lettre
+            document.getElementById('letterContainer').style.display = 'none';
+            document.getElementById('btnPlay').style.display = 'none';
+
+            // Fermer l'enveloppe
+            var envelope = document.getElementById('envelope');
+            envelope.classList.remove('opened');
+
+            isOpen = false;
+
+            // Réafficher le hint
+            setTimeout(function() {
+                document.getElementById('hintMessage').classList.remove('hidden');
+            }, 500);
+        }
+
+        // === TEXT-TO-SPEECH (Ricardo Lector) — lecture élément par élément ===
+        var readableElements = [];
+        var currentReadIndex = 0;
+
+        function getReadableElements() {
+            var letterEl = document.getElementById('letterContent');
+            var els = letterEl.querySelectorAll('h1, .subtitle, .date, .section-title, p, li, .closing p, .signature');
+            var result = [];
+            els.forEach(function(el) {
+                if (!el.closest('.btn-close-envelope') && el.tagName !== 'BUTTON' && el.textContent.trim().length > 0) {
+                    result.push(el);
+                }
+            });
+            return result;
+        }
+
+        function clearAllHighlights() {
+            var highlighted = document.querySelectorAll('.reading-highlight');
+            highlighted.forEach(function(el) {
+                el.classList.remove('reading-highlight');
+            });
+        }
+
+        function highlightElement(el) {
+            clearAllHighlights();
+            el.classList.add('reading-highlight');
+            // Auto-scroll doux vers l'élément en cours
+            var letterBox = document.querySelector('.letter');
+            var elRect = el.getBoundingClientRect();
+            var letterRect = letterBox.getBoundingClientRect();
+            var scrollTarget = letterBox.scrollTop + (elRect.top - letterRect.top) - (letterRect.height / 3);
+            letterBox.scrollTo({ top: scrollTarget, behavior: 'smooth' });
+        }
+
+        function toggleSpeech() {
+            if (isSpeaking) {
+                speechSynth.cancel();
+                isSpeaking = false;
+                clearAllHighlights();
+                updatePlayButton();
+            } else {
+                startSequentialReading();
+            }
+        }
+
+        function startSequentialReading() {
+            if (speechSynth.speaking) {
+                speechSynth.cancel();
+            }
+            readableElements = getReadableElements();
+            currentReadIndex = 0;
+            isSpeaking = true;
+            updatePlayButton();
+            readNextElement();
+        }
+
+        function readNextElement() {
+            if (currentReadIndex >= readableElements.length || !isSpeaking) {
+                // Lecture terminée
+                isSpeaking = false;
+                clearAllHighlights();
+                updatePlayButton();
+                return;
+            }
+
+            var el = readableElements[currentReadIndex];
+            var text = el.textContent.trim();
+
+            // Surligner l'élément en cours
+            highlightElement(el);
+
+            var utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'fr-FR';
+            utterance.rate = 0.9;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+
+            var voices = speechSynth.getVoices();
+            var frenchVoice = voices.find(function(v) { return v.lang.startsWith('fr'); });
+            if (frenchVoice) {
+                utterance.voice = frenchVoice;
+            }
+
+            utterance.onend = function() {
+                currentReadIndex++;
+                if (isSpeaking) {
+                    readNextElement();
+                }
+            };
+
+            utterance.onerror = function() {
+                currentReadIndex++;
+                if (isSpeaking) {
+                    readNextElement();
+                }
+            };
+
+            speechSynth.speak(utterance);
+        }
+
+        function updatePlayButton() {
+            var btn = document.getElementById('btnPlay');
+            if (isSpeaking) {
+                btn.innerHTML = '<span class="play-icon">&#9208;</span> Arr\u00eater la lecture';
+                btn.classList.add('speaking');
+            } else {
+                btn.innerHTML = '<span class="play-icon">&#128264;</span> Faut me lire !';
+                btn.classList.remove('speaking');
+            }
+        }
+
+        // Charger les voix (certains navigateurs les chargent de façon asynchrone)
+        if (speechSynth.onvoiceschanged !== undefined) {
+            speechSynth.onvoiceschanged = function() {};
+        }
+
+        // Mettre à jour le hint après 5 secondes
+        setTimeout(function() {
+            var hint = document.getElementById('hintMessage');
+            if (!hint.classList.contains('hidden')) {
+                hint.innerHTML = '&#128070; <strong>Touchez l\'enveloppe maintenant</strong> pour d\u00e9couvrir le message !';
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
